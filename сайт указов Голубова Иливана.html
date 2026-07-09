@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Официальный портал указов Президента Ударовской Империи</title>
+  <style>
+    :root {
+      --navy: #0b1a2f;
+      --navy-light: #112240;
+      --gold: #c5a45a;
+      --gold-dark: #a68b3c;
+      --white: #ffffff;
+      --off-white: #f5f2e9;
+      --crimson: #8b1a2b;
+      --crimson-light: #a82536;
+      --gray-light: #eae4d7;
+      --gray: #5a5a5a;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+      --shadow-md: 0 6px 20px rgba(0,0,0,0.12);
+      --font-heading: 'Georgia', 'Times New Roman', serif;
+      --font-body: 'Segoe UI', 'Arial', sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--off-white);
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M20 20 L80 20 L80 80 L20 80 Z" fill="none" stroke="%23c5a45a15" stroke-width="0.5"/><circle cx="50" cy="50" r="30" fill="none" stroke="%23c5a45a10" stroke-width="0.5"/></svg>');
+      font-family: var(--font-body);
+      color: #1e1e1e;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 0 40px;
+    }
+
+    .official-header {
+      width: 100%;
+      background: linear-gradient(135deg, #091320 0%, #10243b 100%);
+      border-bottom: 4px solid var(--gold);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      box-shadow: var(--shadow-md);
+      flex-wrap: wrap;
+    }
+    .emblem {
+      width: 70px;
+      height: 85px;
+      flex-shrink: 0;
+    }
+    .emblem svg { width: 100%; height: 100%; }
+    .header-text { text-align: center; }
+    .header-text h1 {
+      font-family: var(--font-heading);
+      font-size: clamp(1.4rem, 4vw, 2.2rem);
+      color: var(--gold);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin: 0;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+    .header-text .subtitle {
+      font-family: var(--font-heading);
+      font-size: 0.9rem;
+      color: #d4c08a;
+      letter-spacing: 3px;
+      margin-top: 2px;
+    }
+
+    .main-container {
+      width: 100%;
+      max-width: 900px;
+      background: var(--white);
+      margin: 20px 15px;
+      border: 1px solid #d9cba3;
+      box-shadow: var(--shadow-md);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .user-panel {
+      background: #f9f7f0;
+      border-bottom: 1px solid #ddd2b0;
+      padding: 12px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .user-panel .user-greeting { color: #333; font-weight: 500; }
+    .user-panel .user-greeting span { font-family: var(--font-heading); color: var(--navy); font-weight: bold; }
+    .user-panel a { color: var(--crimson); text-decoration: none; font-weight: 500; border-bottom: 1px dashed var(--crimson); transition: 0.2s; }
+    .user-panel a:hover { color: #6b0f1a; border-bottom-style: solid; }
+
+    .tabs {
+      display: flex;
+      background: #f2efe4;
+      border-bottom: 2px solid #d0c5a6;
+      overflow-x: auto;
+    }
+    .tab-btn {
+      padding: 14px 22px;
+      background: transparent;
+      border: none;
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      color: #4a3f2c;
+      cursor: pointer;
+      transition: 0.3s;
+      border-bottom: 3px solid transparent;
+      white-space: nowrap;
+      letter-spacing: 0.4px;
+    }
+    .tab-btn:hover { background: rgba(197, 164, 90, 0.08); color: #1e1e1e; }
+    .tab-btn.active { background: #fff; border-bottom: 3px solid var(--crimson); color: var(--navy); font-weight: bold; }
+
+    .tab-content { display: none; padding: 25px 30px; animation: fadeIn 0.3s ease; }
+    .tab-content.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+    .form-group { margin-bottom: 18px; }
+    label {
+      display: block;
+      font-family: var(--font-heading);
+      font-size: 0.9rem;
+      color: #2b2b2b;
+      margin-bottom: 5px;
+      letter-spacing: 0.4px;
+      font-weight: bold;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #cbc0a6;
+      border-radius: 3px;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      background: #fcfcf8;
+      transition: 0.2s;
+      color: #202020;
+    }
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--gold-dark);
+      box-shadow: 0 0 0 3px rgba(197, 164, 90, 0.2);
+      background: #fff;
+    }
+    textarea { min-height: 160px; resize: vertical; }
+    select {
+      appearance: none;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="%23555555" d="M4 6l4 4 4-4z"/></svg>');
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 40px;
+      cursor: pointer;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 11px 28px;
+      background: var(--navy);
+      color: white;
+      border: none;
+      border-radius: 3px;
+      font-family: var(--font-heading);
+      font-size: 0.95rem;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: 0.25s;
+      text-transform: uppercase;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid #1a3652;
+    }
+    .btn:hover { background: #12314f; box-shadow: var(--shadow-md); }
+    .btn-outline { background: transparent; color: var(--navy); border: 1px solid var(--navy); }
+    .btn-outline:hover { background: var(--navy); color: white; }
+    .btn-row { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 10px; }
+
+    /* Карточки */
+    .decree-card {
+      background: #fff;
+      border-left: 5px solid var(--navy);
+      padding: 20px 25px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+      transition: 0.2s;
+      position: relative;
+    }
+    .decree-card:hover { box-shadow: var(--shadow-md); border-left-color: var(--crimson); }
+    .decree-type-badge {
+      display: inline-block;
+      padding: 4px 14px;
+      font-size: 0.7rem;
+      font-weight: bold;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      border-radius: 3px;
+      margin-bottom: 10px;
+    }
+    .badge-ukaz { background: var(--crimson); color: white; }
+    .badge-statya { background: #2d5a27; color: white; }
+    .decree-card h3 {
+      font-family: var(--font-heading);
+      font-size: 1.3rem;
+      color: #1a1a1a;
+      margin: 0 0 8px;
+      line-height: 1.3;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .decree-card h3:hover { color: var(--crimson); text-decoration: underline; }
+    .decree-meta {
+      font-size: 0.8rem;
+      color: #6f6f6f;
+      margin-bottom: 12px;
+      border-bottom: 1px dashed #e0d7c0;
+      padding-bottom: 8px;
+    }
+    .decree-preview {
+      color: #2c2c2c;
+      line-height: 1.6;
+      font-size: 0.95rem;
+      margin-bottom: 12px;
+    }
+    .read-more-btn {
+      background: none;
+      border: none;
+      color: var(--navy);
+      font-family: var(--font-heading);
+      font-size: 0.9rem;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 0;
+      transition: 0.2s;
+    }
+    .read-more-btn:hover { color: var(--crimson); }
+    .delete-btn {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 1.1rem;
+      cursor: pointer;
+      color: #aa8e8e;
+      transition: 0.2s;
+      opacity: 0;
+    }
+    .decree-card:hover .delete-btn { opacity: 1; }
+    .delete-btn:hover { color: #c0392b; }
+
+    .empty-msg {
+      text-align: center;
+      padding: 40px;
+      color: #8f8f8f;
+      font-style: italic;
+      font-family: var(--font-heading);
+    }
+
+    /* Модальное окно */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.65);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      visibility: hidden;
+      opacity: 0;
+      transition: 0.3s;
+    }
+    .modal-overlay.active {
+      visibility: visible;
+      opacity: 1;
+    }
+    .modal-content {
+      background: #fff;
+      max-width: 700px;
+      width: 90%;
+      border: 4px solid var(--gold);
+      border-radius: 6px;
+      padding: 30px;
+      position: relative;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+    .modal-close {
+      position: absolute;
+      top: 12px;
+      right: 18px;
+      background: none;
+      border: none;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #666;
+      line-height: 1;
+    }
+    .modal-close:hover { color: #000; }
+    .modal-header {
+      border-bottom: 2px solid var(--gold-dark);
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+    .modal-header .modal-type {
+      font-size: 0.8rem;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--crimson);
+      margin-bottom: 5px;
+    }
+    .modal-header h2 {
+      font-family: var(--font-heading);
+      font-size: 1.6rem;
+      color: #1a1a1a;
+    }
+    .modal-meta {
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+    .modal-body {
+      white-space: pre-wrap;
+      line-height: 1.7;
+      font-size: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      .official-header { flex-direction: column; }
+      .tab-content { padding: 20px 15px; }
+      .btn-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <header class="official-header">
+    <div class="emblem">
+      <svg viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 15 L78 85 L50 70 L22 85 Z" fill="#c5a45a" stroke="#8b7530" stroke-width="1.5"/>
+        <circle cx="50" cy="85" r="12" fill="#8b1a2b" stroke="#c5a45a" stroke-width="1.5"/>
+        <path d="M35 40 L50 15 L65 40" fill="none" stroke="#c5a45a" stroke-width="1.5"/>
+        <circle cx="35" cy="38" r="4" fill="#c5a45a"/>
+        <circle cx="65" cy="38" r="4" fill="#c5a45a"/>
+        <path d="M42 68 L50 55 L58 68" fill="#c5a45a"/>
+      </svg>
+    </div>
+    <div class="header-text">
+      <h1>Ударовская Империя</h1>
+      <div class="subtitle">Официальный портал указов Президента</div>
+    </div>
+  </header>
+
+  <div class="main-container">
+    <div class="user-panel" id="userInfoDisplay"></div>
+
+    <div class="tabs" id="tabNavigation">
+      <button class="tab-btn active" data-tab="tab-decrees">📜 Указы и статьи</button>
+      <button class="tab-btn" data-tab="tab-login" id="tabLoginBtn">🔐 Вход</button>
+      <button class="tab-btn" data-tab="tab-register" id="tabRegisterBtn">📝 Регистрация</button>
+      <button class="tab-btn" data-tab="tab-create" id="tabCreateBtn" style="display:none;">✍️ Опубликовать</button>
+    </div>
+
+    <div class="tab-content active" id="tab-decrees">
+      <h2 style="font-family: var(--font-heading); color: #1e1e1e; margin-bottom: 20px;">Все официальные документы</h2>
+      <div id="decreesList"></div>
+    </div>
+
+    <div class="tab-content" id="tab-login">
+      <h2 style="font-family: var(--font-heading); color: #1e1e1e; margin-bottom: 20px;">Вход для должностных лиц</h2>
+      <form id="loginForm">
+        <div class="form-group"><label for="loginUsername">Имя пользователя</label><input type="text" id="loginUsername" placeholder="Введите логин" required></div>
+        <div class="form-group"><label for="loginPassword">Пароль</label><input type="password" id="loginPassword" placeholder="••••••••" required></div>
+        <div class="btn-row"><button type="submit" class="btn">Войти</button></div>
+      </form>
+    </div>
+
+    <div class="tab-content" id="tab-register">
+      <h2 style="font-family: var(--font-heading); color: #1e1e1e; margin-bottom: 20px;">Регистрация уполномоченного лица</h2>
+      <form id="registerForm">
+        <div class="form-group"><label for="regDisplayName">Фамилия и должность (титул)</label><input type="text" id="regDisplayName" placeholder="Например: Граф Орлов-Давыдов" required></div>
+        <div class="form-group"><label for="regUsername">Логин</label><input type="text" id="regUsername" placeholder="Не менее 3 символов" required minlength="3"></div>
+        <div class="form-group"><label for="regPassword">Пароль</label><input type="password" id="regPassword" placeholder="Не менее 4 символов" required minlength="4"></div>
+        <div class="btn-row"><button type="submit" class="btn">Зарегистрироваться</button></div>
+      </form>
+    </div>
+
+    <div class="tab-content" id="tab-create">
+      <h2 style="font-family: var(--font-heading); color: #1e1e1e; margin-bottom: 20px;">Опубликовать официальный документ</h2>
+      <form id="createForm">
+        <div class="form-group"><label for="decreeType">Тип документа</label><select id="decreeType" required><option value="ukaz">📜 Указ Президента</option><option value="statya">📰 Официальная статья</option></select></div>
+        <div class="form-group"><label for="decreeTitle">Заголовок</label><input type="text" id="decreeTitle" placeholder="Введите заголовок" required></div>
+        <div class="form-group"><label for="decreeContent">Текст документа</label><textarea id="decreeContent" placeholder="Содержание..." required></textarea></div>
+        <div class="btn-row"><button type="submit" class="btn">Опубликовать</button></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Модальное окно для чтения документа -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-content">
+      <button class="modal-close" id="modalClose">&times;</button>
+      <div class="modal-header">
+        <div class="modal-type" id="modalType"></div>
+        <h2 id="modalTitle"></h2>
+      </div>
+      <div class="modal-meta" id="modalMeta"></div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const STORAGE_USERS = 'udarovsk_official_users';
+      const STORAGE_CURRENT = 'udarovsk_official_current';
+      const STORAGE_DECREES = 'udarovsk_official_decrees';
+
+      function loadUsers() { return JSON.parse(localStorage.getItem(STORAGE_USERS) || '[]'); }
+      function saveUsers(users) { localStorage.setItem(STORAGE_USERS, JSON.stringify(users)); }
+      function getCurrentUser() { return JSON.parse(localStorage.getItem(STORAGE_CURRENT) || 'null'); }
+      function setCurrentUser(user) { user ? localStorage.setItem(STORAGE_CURRENT, JSON.stringify(user)) : localStorage.removeItem(STORAGE_CURRENT); }
+      function loadDecrees() { return JSON.parse(localStorage.getItem(STORAGE_DECREES) || '[]'); }
+      function saveDecrees(decrees) { localStorage.setItem(STORAGE_DECREES, JSON.stringify(decrees)); }
+
+      function initData() {
+        const users = loadUsers();
+        if (users.length === 0) {
+          saveUsers([
+            { username: 'president', password: 'udar123', displayName: 'Президент Ударов' },
+            { username: 'sovetnik', password: 'kron123', displayName: 'Советник Кронский' }
+          ]);
+        }
+        const decrees = loadDecrees();
+        if (decrees.length === 0) {
+          const now = Date.now();
+          saveDecrees([
+            { id: now-400000, type:'ukaz', title:'Указ №1 «Об учреждении Империи»', content:'Высочайшим повелением Президента Ударовской Империи объявляется о создании единого государства. Все территории отныне объединяются под верховной властью Президента.\n\nДа здравствует Империя!', author:'Президент Ударов', authorUsername:'president', date: new Date(now-400000).toISOString() },
+            { id: now-350000, type:'statya', title:'О значении государственной дисциплины', content:'Дисциплина и порядок являются основой процветания Империи. Каждый гражданин обязан неукоснительно соблюдать законы и указы, способствуя укреплению державы. Только через самодисциплину мы достигнем величия.', author:'Советник Кронский', authorUsername:'sovetnik', date: new Date(now-350000).toISOString() },
+            { id: now-300000, type:'ukaz', title:'Указ №2 «О создании Имперской Гвардии»', content:'Для защиты рубежей и поддержания порядка учреждается Имперская Гвардия — элитное подразделение, верное Президенту и Империи. Командующим назначается генерал-фельдмаршал Воронцов.', author:'Президент Ударов', authorUsername:'president', date: new Date(now-300000).toISOString() },
+            { id: now-250000, type:'statya', title:'Имперская архитектура: величие и традиции', content:'Архитектура Ударовской Империи сочетает в себе мощь классических форм и национальный колорит. Новые административные здания столицы возводятся с использованием мрамора и золотых куполов, символизируя незыблемость власти.', author:'Министр культуры Голицына', authorUsername:'golitsyna', date: new Date(now-250000).toISOString() },
+            { id: now-200000, type:'ukaz', title:'Указ №3 «О праздновании Дня Империи»', content:'Установить ежегодный государственный праздник — День Империи, отмечаемый 15 сентября. В этот день проводятся военные парады, народные гуляния и торжественный приём во дворце Президента.', author:'Президент Ударов', authorUsername:'president', date: new Date(now-200000).toISOString() },
+            { id: now-150000, type:'statya', title:'Роль науки в укреплении государства', content:'Имперская Академия наук докладывает о прорывах в области энергетики и машиностроения. Новые разработки позволят увеличить обороноспособность и улучшить качество жизни подданных. Наука — двигатель прогресса Империи.', author:'Академик Игнатьев', authorUsername:'ignatiev', date: new Date(now-150000).toISOString() },
+            { id: now-100000, type:'ukaz', title:'Указ №4 «О награждении орденом Удара»', content:'За выдающиеся заслуги перед Отечеством учредить орден Удара I степени. Первыми кавалерами становятся советник Кронский и генерал Воронцов. Орден вручается лично Президентом в торжественной обстановке.', author:'Президент Ударов', authorUsername:'president', date: new Date(now-100000).toISOString() },
+            { id: now-50000, type:'statya', title:'Ударовская кухня: гастрономическое наследие', content:'Традиционная кухня Империи славится сытными мясными блюдами и ароматными пирогами. Особой популярностью пользуется "ударский плов" с бараниной и сухофруктами, подаваемый на всех официальных банкетах.', author:'Шеф-повар Дворца Михайлов', authorUsername:'mikhailov', date: new Date(now-50000).toISOString() }
+          ]);
+        }
+      }
+      initData();
+
+      const userInfoDisplay = document.getElementById('userInfoDisplay');
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      const tabContents = document.querySelectorAll('.tab-content');
+      const tabLoginBtn = document.getElementById('tabLoginBtn');
+      const tabRegisterBtn = document.getElementById('tabRegisterBtn');
+      const tabCreateBtn = document.getElementById('tabCreateBtn');
+      const decreesListEl = document.getElementById('decreesList');
+      const loginForm = document.getElementById('loginForm');
+      const registerForm = document.getElementById('registerForm');
+      const createForm = document.getElementById('createForm');
+      const modalOverlay = document.getElementById('modalOverlay');
+      const modalClose = document.getElementById('modalClose');
+
+      function switchTab(tabId) {
+        tabContents.forEach(tc => tc.classList.remove('active'));
+        tabBtns.forEach(tb => tb.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.add('active');
+        if (tabId === 'tab-decrees') renderDecrees();
+      }
+
+      tabBtns.forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
+
+      function updateUI() {
+        const user = getCurrentUser();
+        if (user) {
+          userInfoDisplay.innerHTML = `👤 <span>${escapeHtml(user.displayName)}</span> (${escapeHtml(user.username)}) &nbsp;|&nbsp; <a href="#" id="logoutLink">Выйти</a>`;
+          tabLoginBtn.style.display = 'none';
+          tabRegisterBtn.style.display = 'none';
+          tabCreateBtn.style.display = 'inline-block';
+          document.getElementById('logoutLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            setCurrentUser(null);
+            updateUI();
+            switchTab('tab-decrees');
+          });
+        } else {
+          userInfoDisplay.innerHTML = `<span style="color:#777;">👤 Гость</span> &nbsp;|&nbsp; <a href="#" id="loginPromptLink">Войти</a>`;
+          tabLoginBtn.style.display = 'inline-block';
+          tabRegisterBtn.style.display = 'inline-block';
+          tabCreateBtn.style.display = 'none';
+          document.getElementById('loginPromptLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            switchTab('tab-login');
+          });
+          if (document.getElementById('tab-create').classList.contains('active')) switchTab('tab-decrees');
+        }
+      }
+
+      function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+      }
+
+      function formatDate(iso) {
+        const d = new Date(iso);
+        return `${d.getDate().toString().padStart(2,'0')}.${(d.getMonth()+1).toString().padStart(2,'0')}.${d.getFullYear()} ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
+      }
+
+      function openModal(decree) {
+        document.getElementById('modalType').textContent = decree.type === 'ukaz' ? 'УКАЗ ПРЕЗИДЕНТА' : 'ОФИЦИАЛЬНАЯ СТАТЬЯ';
+        document.getElementById('modalTitle').textContent = decree.title;
+        document.getElementById('modalMeta').innerHTML = `👤 ${escapeHtml(decree.author)} &nbsp;|&nbsp; 📅 ${formatDate(decree.date)}`;
+        document.getElementById('modalBody').textContent = decree.content;
+        modalOverlay.classList.add('active');
+      }
+
+      function closeModal() {
+        modalOverlay.classList.remove('active');
+      }
+
+      modalClose.addEventListener('click', closeModal);
+      modalOverlay.addEventListener('click', (e) => {
+        if (e.target === modalOverlay) closeModal();
+      });
+
+      function renderDecrees() {
+        const decrees = loadDecrees().sort((a,b) => new Date(b.date) - new Date(a.date));
+        const currentUser = getCurrentUser();
+        if (!decrees.length) {
+          decreesListEl.innerHTML = '<div class="empty-msg">📭 Официальные документы отсутствуют.</div>';
+          return;
+        }
+        let html = '';
+        decrees.forEach(d => {
+          const badge = d.type === 'ukaz' ? 'УКАЗ' : 'СТАТЬЯ';
+          const badgeClass = d.type === 'ukaz' ? 'badge-ukaz' : 'badge-statya';
+          const preview = d.content.length > 180 ? d.content.substring(0, 180) + '…' : d.content;
+          const canDelete = currentUser && currentUser.username === d.authorUsername;
+          html += `
+            <div class="decree-card">
+              <span class="decree-type-badge ${badgeClass}">${badge}</span>
+              ${canDelete ? `<button class="delete-btn" data-id="${d.id}" title="Удалить">✕</button>` : ''}
+              <h3 data-id="${d.id}" class="decree-title-click">${escapeHtml(d.title)}</h3>
+              <div class="decree-meta">👤 ${escapeHtml(d.author)} &nbsp;|&nbsp; 📅 ${formatDate(d.date)}</div>
+              <div class="decree-preview">${escapeHtml(preview)}</div>
+              <button class="read-more-btn" data-id="${d.id}">Читать далее →</button>
+            </div>`;
+        });
+        decreesListEl.innerHTML = html;
+
+        // Обработчики для заголовков и кнопок "Читать далее"
+        document.querySelectorAll('.decree-title-click, .read-more-btn').forEach(el => {
+          el.addEventListener('click', function() {
+            const id = parseInt(this.dataset.id);
+            const decree = loadDecrees().find(d => d.id === id);
+            if (decree) openModal(decree);
+          });
+        });
+
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+          btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (confirm('Удалить этот документ?')) {
+              let decrees = loadDecrees().filter(d => d.id !== parseInt(this.dataset.id));
+              saveDecrees(decrees);
+              renderDecrees();
+            }
+          });
+        });
+      }
+
+      loginForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const username = document.getElementById('loginUsername').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        const user = loadUsers().find(u => u.username === username && u.password === password);
+        if (user) {
+          setCurrentUser({ username: user.username, displayName: user.displayName });
+          updateUI();
+          switchTab('tab-decrees');
+          document.getElementById('loginUsername').value = '';
+          document.getElementById('loginPassword').value = '';
+          alert('✅ Доступ разрешён.');
+        } else alert('❌ Неверные учётные данные.');
+      });
+
+      registerForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const displayName = document.getElementById('regDisplayName').value.trim();
+        const username = document.getElementById('regUsername').value.trim();
+        const password = document.getElementById('regPassword').value;
+        if (!displayName || !username || !password) return alert('Заполните все поля.');
+        if (username.length < 3) return alert('Логин минимум 3 символа.');
+        if (password.length < 4) return alert('Пароль минимум 4 символа.');
+        const users = loadUsers();
+        if (users.find(u => u.username === username)) return alert('Пользователь уже существует.');
+        users.push({ username, password, displayName });
+        saveUsers(users);
+        setCurrentUser({ username, displayName });
+        updateUI();
+        switchTab('tab-decrees');
+        document.getElementById('regDisplayName').value = '';
+        document.getElementById('regUsername').value = '';
+        document.getElementById('regPassword').value = '';
+        alert('✅ Регистрация завершена.');
+      });
+
+      createForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const currentUser = getCurrentUser();
+        if (!currentUser) {
+          alert('❌ Необходимо авторизоваться.');
+          switchTab('tab-login');
+          return;
+        }
+        const type = document.getElementById('decreeType').value;
+        const title = document.getElementById('decreeTitle').value.trim();
+        const content = document.getElementById('decreeContent').value.trim();
+        if (!title || !content) return alert('Заполните заголовок и текст.');
+        const decrees = loadDecrees();
+        decrees.push({
+          id: Date.now(),
+          type, title, content,
+          author: currentUser.displayName,
+          authorUsername: currentUser.username,
+          date: new Date().toISOString()
+        });
+        saveDecrees(decrees);
+        document.getElementById('decreeTitle').value = '';
+        document.getElementById('decreeContent').value = '';
+        alert('✅ Документ опубликован.');
+        switchTab('tab-decrees');
+      });
+
+      updateUI();
+      renderDecrees();
+      switchTab('tab-decrees');
+    })();
+  </script>
+</body>
+</html>
